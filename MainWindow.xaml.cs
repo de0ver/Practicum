@@ -75,7 +75,7 @@ namespace practicum_march_april_2025
             {
                 response.Read();
 
-                user.id = (int)response.GetValue(0);
+                user.id = response.GetInt32(0);
                 user.login = response.GetString(1);
                 user.name = response.GetString(2);
                 user.role_id = response.GetInt16(3);
@@ -93,14 +93,21 @@ namespace practicum_march_april_2025
             {
                 ThemeManager.Current.ApplicationTheme = ApplicationTheme.Dark;
                 Moon.Source = new BitmapImage(new Uri(@"/img/moon_dark.png", UriKind.RelativeOrAbsolute));
+                Settings.Source = new BitmapImage(new Uri(@"/img/gear_dark.png", UriKind.RelativeOrAbsolute));
                 Border.BorderBrush = new SolidColorBrush(Color.FromRgb(0xFF, 0xFF, 0xFF));
             }
             else
             {
                 ThemeManager.Current.ApplicationTheme = ApplicationTheme.Light;
                 Moon.Source = new BitmapImage(new Uri(@"/img/moon_light.png", UriKind.RelativeOrAbsolute));
+                Settings.Source = new BitmapImage(new Uri(@"/img/gear_light.png", UriKind.RelativeOrAbsolute));
                 Border.BorderBrush = new SolidColorBrush(Color.FromRgb(0x00, 0x00, 0x00));
             }
+        }
+
+        private void ForgotPassword(object sender, MouseButtonEventArgs e)
+        {
+            globals.Show("Для сброса пароля, напишите на почту mailto:help@krista.ru.\nВ письме укажите логин и причину для сброса пароля.", globals.PopUpType.OK);
         }
 
         protected override void OnClosed(EventArgs e)

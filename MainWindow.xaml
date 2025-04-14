@@ -13,7 +13,7 @@
             <Border HorizontalAlignment="Center" Height="296" VerticalAlignment="Center">
                 <Grid>
                     <Button Content="Войти" Margin="0,177,0,0" VerticalAlignment="Top" Height="79" Width="312" Click="LoginClick"/>
-                    <Label Content="Забыли пароль?" HorizontalAlignment="Left" Margin="100,269,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
+                    <Label Content="Забыли пароль?" MouseDown="ForgotPassword" HorizontalAlignment="Left" Margin="100,269,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
                     <TextBox x:Name="tboxLogin" HorizontalAlignment="Left" TextWrapping="Wrap" VerticalAlignment="Top" Width="312" Margin="0,24,0,0"/>
                     <PasswordBox x:Name="pboxPassword" HorizontalAlignment="Left" Margin="0,86,0,0" PasswordChar="*" VerticalAlignment="Top" Width="312" MaxLength="32"/>
                     <Label Content="Логин" HorizontalAlignment="Left" VerticalAlignment="Top"/>

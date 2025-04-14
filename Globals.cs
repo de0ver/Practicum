@@ -16,12 +16,14 @@ namespace Globals
         public string conn_db = "practicum";
         public string conn_server = Environment.MachineName;
         private string[] tables = { "Users", "Roles", "Groups" };
+
         public enum PopUpType
         {
             OK = 0,
             Error,
             Warning,
         };
+
         public class PopUp
         {
             
@@ -79,7 +81,7 @@ namespace Globals
 
             for (int i = 0; i < service.Length; i++)
             {
-                if (service[i].DisplayName.Contains("MSSQLSERVER01"))
+                if (service[i].DisplayName.Contains("MSSQLSERVER"))
                     return true;
             }
 
@@ -97,12 +99,11 @@ namespace Globals
             if (!check_tables())
                 return false;
 
-         return !(connection.State == System.Data.ConnectionState.Closed);
+            return !(connection.State == System.Data.ConnectionState.Closed);
         }
 
         public bool check_connection(string user, string pass, string db, string server)
         {
-
             if (!check_services())
                 return false;
 
@@ -190,6 +191,7 @@ namespace Globals
 
             return popUp.Show(text, title, type);
         }
+
         public MessageBoxResult Show(string text, PopUpType type)
         {
             PopUp popUp = new PopUp();
@@ -211,6 +213,31 @@ namespace Globals
             public string login { get; set; }
             public int role_id { get; set; }
             public int group_id { get; set; }
+
+            public User(int id, string name, string login, int role_id, int group_id)
+            {
+                this.id = id;
+                this.name = name;
+                this.login = login;
+                this.role_id = role_id;
+                this.group_id = group_id;
+            }
+
+            public string get_role()
+            {
+                SqlDataReader reader;
+                string role = "nil";
+                try {
+                    reader = command("select NAME from ROLES where ROLE_ID = Users.ROLE_ID").ExecuteReader(); //TODO
+                    reader.Read()
+                    role = reader.GetValueString(0);
+                    reader.Close();
+                } catch (SqlException ex) {
+                    Show(ex.ToString(), PopUpType.Error);
+                }
+
+                return role;
+            }
         }
     }
 }
