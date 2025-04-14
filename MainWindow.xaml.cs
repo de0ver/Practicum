@@ -1,12 +1,12 @@
-﻿using Globals;
-using krista_app;
-using ModernWpf;
-using System;
+﻿using System;
 using System.Data.SqlClient;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Globals;
+using krista_app;
+using ModernWpf;
 
 namespace practicum_march_april_2025
 {
@@ -16,9 +16,9 @@ namespace practicum_march_april_2025
     public partial class MainWindow : Window
     {
         Global globals = new Global();
-        Global.User user = new Global.User();
+        Global.User user;
         Global.PopUp popUp = new Global.PopUp();
-        
+
         public MainWindow()
         {
             InitializeComponent();
@@ -40,7 +40,8 @@ namespace practicum_march_april_2025
                     Admin admin_page = new Admin(globals);
 
                     admin_page.Show();
-                } else
+                }
+                else
                 {
                     Hub hub = new Hub();
 
@@ -64,9 +65,13 @@ namespace practicum_march_april_2025
             bool result;
             try
             {
-                SqlCommand command = new SqlCommand($"select ID, LOGIN, NAME, ROLE_ID, GROUP_ID from dbo.Users where login='{login}' and password='{password}'", globals.connection);
+                SqlCommand command = new SqlCommand(
+                    $"select ID, LOGIN, NAME, ROLE_ID, GROUP_ID from dbo.Users where login='{login}' and password='{password}'",
+                    globals.connection
+                );
                 response = command.ExecuteReader();
-            } catch (Exception)
+            }
+            catch (Exception)
             {
                 return false;
             }
@@ -92,22 +97,33 @@ namespace practicum_march_april_2025
             if (ThemeManager.Current.ActualApplicationTheme == ApplicationTheme.Light)
             {
                 ThemeManager.Current.ApplicationTheme = ApplicationTheme.Dark;
-                Moon.Source = new BitmapImage(new Uri(@"/img/moon_dark.png", UriKind.RelativeOrAbsolute));
-                Settings.Source = new BitmapImage(new Uri(@"/img/gear_dark.png", UriKind.RelativeOrAbsolute));
+                Moon.Source = new BitmapImage(
+                    new Uri(@"/img/moon_dark.png", UriKind.RelativeOrAbsolute)
+                );
+                Settings.Source = new BitmapImage(
+                    new Uri(@"/img/gear_dark.png", UriKind.RelativeOrAbsolute)
+                );
                 Border.BorderBrush = new SolidColorBrush(Color.FromRgb(0xFF, 0xFF, 0xFF));
             }
             else
             {
                 ThemeManager.Current.ApplicationTheme = ApplicationTheme.Light;
-                Moon.Source = new BitmapImage(new Uri(@"/img/moon_light.png", UriKind.RelativeOrAbsolute));
-                Settings.Source = new BitmapImage(new Uri(@"/img/gear_light.png", UriKind.RelativeOrAbsolute));
+                Moon.Source = new BitmapImage(
+                    new Uri(@"/img/moon_light.png", UriKind.RelativeOrAbsolute)
+                );
+                Settings.Source = new BitmapImage(
+                    new Uri(@"/img/gear_light.png", UriKind.RelativeOrAbsolute)
+                );
                 Border.BorderBrush = new SolidColorBrush(Color.FromRgb(0x00, 0x00, 0x00));
             }
         }
 
         private void ForgotPassword(object sender, MouseButtonEventArgs e)
         {
-            globals.Show("Для сброса пароля, напишите на почту mailto:help@krista.ru.\nВ письме укажите логин и причину для сброса пароля.", globals.PopUpType.OK);
+            popUp.Show(
+                "Для сброса пароля, напишите на почту mailto:help@krista.ru.\nВ письме укажите логин и причину для сброса пароля.",
+                Global.PopUpType.OK
+            );
         }
 
         protected override void OnClosed(EventArgs e)

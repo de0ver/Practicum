@@ -4,7 +4,6 @@ using System.Data.SqlClient;
 using System.ServiceProcess;
 using System.Windows;
 using System.Windows.Media;
-using static Globals.Global.PopUp;
 
 namespace Globals
 {
@@ -14,7 +13,7 @@ namespace Globals
         public string conn_user = "admin";
         public string conn_pass = "admin";
         public string conn_db = "practicum";
-        public string conn_server = Environment.MachineName;
+        public string conn_server = Environment.MachineName + "\\SQLEXPRESS";
         private string[] tables = { "Users", "Roles", "Groups" };
 
         public enum PopUpType
@@ -26,7 +25,6 @@ namespace Globals
 
         public class PopUp
         {
-            
             public MessageBoxResult Show(string text, string title, PopUpType type)
             {
                 MessageBoxResult result = 0;
@@ -34,13 +32,28 @@ namespace Globals
                 switch ((int)type)
                 {
                     case 0:
-                        result = MessageBox.Show(text, title, MessageBoxButton.OK, MessageBoxImage.Information);
+                        result = MessageBox.Show(
+                            text,
+                            title,
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Information
+                        );
                         break;
                     case 1:
-                        result = MessageBox.Show(text, title, MessageBoxButton.OK, MessageBoxImage.Error);
+                        result = MessageBox.Show(
+                            text,
+                            title,
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Error
+                        );
                         break;
                     case 2:
-                        result = MessageBox.Show(text, title, MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                        result = MessageBox.Show(
+                            text,
+                            title,
+                            MessageBoxButton.YesNo,
+                            MessageBoxImage.Warning
+                        );
                         break;
                     default:
                         result = 0;
@@ -57,13 +70,28 @@ namespace Globals
                 switch ((int)type)
                 {
                     case 0:
-                        result = MessageBox.Show(text, "Информация", MessageBoxButton.OK, MessageBoxImage.Information);
+                        result = MessageBox.Show(
+                            text,
+                            "Информация",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Information
+                        );
                         break;
                     case 1:
-                        result = MessageBox.Show(text, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        result = MessageBox.Show(
+                            text,
+                            "Ошибка",
+                            MessageBoxButton.OK,
+                            MessageBoxImage.Error
+                        );
                         break;
                     case 2:
-                        result = MessageBox.Show(text, "Предупреждение", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                        result = MessageBox.Show(
+                            text,
+                            "Предупреждение",
+                            MessageBoxButton.YesNo,
+                            MessageBoxImage.Warning
+                        );
                         break;
                     default:
                         result = 0;
@@ -81,9 +109,11 @@ namespace Globals
 
             for (int i = 0; i < service.Length; i++)
             {
-                if (service[i].DisplayName.Contains("MSSQLSERVER"))
+                if (service[i].DisplayName.Contains("SQL"))
                     return true;
             }
+
+            Show("1", PopUpType.OK);
 
             return false;
         }
@@ -93,8 +123,9 @@ namespace Globals
             if (!check_services())
                 return false;
 
-
-            connection = connect($"data source={conn_server}\\MSSQLSERVER01;initial catalog={conn_db};user id={conn_user};password={conn_pass};MultipleActiveResultSets = True");
+            connection = connect(
+                $"data source={conn_server};initial catalog={conn_db};user id={conn_user};password={conn_pass};MultipleActiveResultSets = True"
+            );
 
             if (!check_tables())
                 return false;
@@ -107,7 +138,9 @@ namespace Globals
             if (!check_services())
                 return false;
 
-            connection = connect($"data source={server}\\MSSQLSERVER01;initial catalog={db};user id={user};password={pass};MultipleActiveResultSets = True");
+            connection = connect(
+                $"data source={server};initial catalog={db};user id={user};password={pass};MultipleActiveResultSets = True"
+            );
 
             if (!check_tables())
                 return false;
@@ -125,14 +158,14 @@ namespace Globals
                 {
                     comm = command($"select * from dbo.{tables[i]}");
                     response = comm.ExecuteReader();
-                    if (!response.HasRows)
-                    {
-
-                    }
+                    if (!response.HasRows) { }
                 }
                 catch (SqlException ex)
                 {
-                    if (Show($"Не найдена таблица {tables[i]}! Создать?", PopUpType.Warning) == MessageBoxResult.Yes)
+                    if (
+                        Show($"Не найдена таблица {tables[i]}! Создать?", PopUpType.Warning)
+                        == MessageBoxResult.Yes
+                    )
                     {
                         if (create_table(tables[i]))
                             Show("Таблица создана!", PopUpType.OK);
@@ -149,7 +182,7 @@ namespace Globals
         }
 
         private SqlConnection connect(string conn_text)
-        { 
+        {
             SqlConnection conn = new SqlConnection(conn_text);
 
             string err = "";
@@ -175,15 +208,19 @@ namespace Globals
         }
 
         private bool create_table(string name)
-       {
+        {
             try
             {
-                return command($"USE [{conn_db}]\r\n\r\n/****** Object:  Table [dbo].[{name}]    Script Date: 14.04.2025 6:53:09 ******/\r\nSET ANSI_NULLS ON\r\n\r\nSET QUOTED_IDENTIFIER ON\r\n\r\nCREATE TABLE [dbo].[{name}](\r\n\t[ID] [int] NOT NULL,\r\n\t[login] [nvarchar](50) NULL,\r\n\t[password] [nvarchar](50) NULL,\r\n\t[name] [nvarchar](max) NULL,\r\n\t[role_id] [smallint] NULL,\r\n\t[group_id] [smallint] NULL\r\n) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]\r\n").ExecuteNonQuery() > 0;
-            } catch (SqlException ex)
+                return command(
+                            $"USE [{conn_db}]\r\n\r\n/****** Object:  Table [dbo].[{name}]    Script Date: 14.04.2025 6:53:09 ******/\r\nSET ANSI_NULLS ON\r\n\r\nSET QUOTED_IDENTIFIER ON\r\n\r\nCREATE TABLE [dbo].[{name}](\r\n\t[ID] [int] NOT NULL,\r\n\t[login] [nvarchar](50) NULL,\r\n\t[password] [nvarchar](50) NULL,\r\n\t[name] [nvarchar](max) NULL,\r\n\t[role_id] [smallint] NULL,\r\n\t[group_id] [smallint] NULL\r\n) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]\r\n"
+                        )
+                        .ExecuteNonQuery() > 0;
+            }
+            catch (SqlException ex)
             {
                 return Show(ex.ToString(), PopUpType.Error) == MessageBoxResult.None;
             }
-       }
+        }
 
         public MessageBoxResult Show(string text, string title, PopUpType type)
         {
@@ -199,11 +236,14 @@ namespace Globals
             return popUp.Show(text, type);
         }
 
-        public Dictionary<string, SolidColorBrush> colors = new Dictionary<string, SolidColorBrush>()
+        public Dictionary<string, SolidColorBrush> colors = new Dictionary<
+            string,
+            SolidColorBrush
+        >()
         {
             ["Red"] = new SolidColorBrush(Color.FromRgb(0xFF, 0x00, 0x00)),
             ["Green"] = new SolidColorBrush(Color.FromRgb(0x00, 0xFF, 0x00)),
-            ["Blue"] = new SolidColorBrush(Color.FromRgb(0x00, 0x00, 0xFF))
+            ["Blue"] = new SolidColorBrush(Color.FromRgb(0x00, 0x00, 0xFF)),
         };
 
         public class User
@@ -225,18 +265,23 @@ namespace Globals
 
             public string get_role()
             {
+                return "";
+                /*
+                PopUp popUp = new PopUp();
+
                 SqlDataReader reader;
                 string role = "nil";
                 try {
                     reader = command("select NAME from ROLES where ROLE_ID = Users.ROLE_ID").ExecuteReader(); //TODO
-                    reader.Read()
-                    role = reader.GetValueString(0);
+                    reader.Read();
+                    role = reader.GetString(0);
                     reader.Close();
                 } catch (SqlException ex) {
-                    Show(ex.ToString(), PopUpType.Error);
+                    popUp.Show(ex.ToString(), PopUpType.Error);
                 }
 
                 return role;
+                */
             }
         }
     }

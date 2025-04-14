@@ -6,6 +6,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{F71935C2-4818-49C8-B14A-57E259FAF7ED}</ProjectGuid>
+    <UseWPF>True</UseWPF>
     <OutputType>WinExe</OutputType>
     <RootNamespace>krista_app</RootNamespace>
     <AssemblyName>app_wpf</AssemblyName>
@@ -63,9 +64,6 @@
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>DCCEDD53153DBFC4DCBBE5CED608E860D71B07F8</ManifestCertificateThumbprint>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ManifestKeyFile>practicum_march_april_2025_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -164,7 +162,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="practicum_march_april_2025_TemporaryKey.pfx" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

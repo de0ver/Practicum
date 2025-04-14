@@ -1,0 +1,18 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "taskName": "build",
+            "type": "process",
+            "command": "C:\\Program Files (x86)\\MSBuild\\14.0\\Bin\\MSBuild.exe",
+            "args": [
+                "${workspaceRoot}/practicum_march_april_2025.csproj"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": "$msCompile"
+        }
+    ]
+}
