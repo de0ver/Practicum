@@ -1,0 +1,39 @@
+﻿<Window x:Class="practicum_march_april_2025.Hub"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:practicum_march_april_2025"
+        xmlns:ui="http://schemas.modernwpf.com/2019"
+        ui:WindowHelper.UseModernWindowStyle="True"
+        mc:Ignorable="d"
+        Height="480" Width="640"  ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Label Content="Главная страница" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top"/>
+        <Image HorizontalAlignment="Left" Height="100" Margin="32,32,0,0" VerticalAlignment="Top" Width="100" Source="/img/user_light.png"/>
+        <StackPanel HorizontalAlignment="Left" Height="195" Margin="195,34,0,0" VerticalAlignment="Top" Width="125" Orientation="Vertical" FlowDirection="LeftToRight">
+            <Button Background="White" Content="ФИО" BorderBrush="Black" Width="125"/>
+            <Button Background="Gray" Content="Учетная запись" BorderBrush="Black" Width="125"/>
+            <Button Background="White" Content="Подразделение" BorderBrush="Black" Width="125"/>
+            <Button Background="Gray" Content="Дата рождения" BorderBrush="Black" Width="125"/>
+            <Button Background="White" Content="Офис" BorderBrush="Black" Width="125"/>
+            <Button Background="Gray" Content="Телефон" BorderBrush="Black" Width="125"/>
+        </StackPanel>
+        <StackPanel HorizontalAlignment="Left" Height="195" Margin="320,34,0,0" VerticalAlignment="Top" Width="125" Orientation="Vertical" FlowDirection="LeftToRight">
+            <Button Background="White" Content="Имя" BorderBrush="Black" Width="125"/>
+            <Button Background="Gray" Content="Логин" BorderBrush="Black" Width="125"/>
+            <Button Background="White" Content="Код/Имя" BorderBrush="Black" Width="125"/>
+            <Button Background="Gray" Content="Дата дд.мм.гггг" BorderBrush="Black" Width="125"/>
+            <Button Background="White" Content="Код" BorderBrush="Black" Width="125"/>
+            <Button Background="Gray" Content="Номер" BorderBrush="Black" Width="125"/>
+        </StackPanel>
+        <StackPanel HorizontalAlignment="Center" Height="64" Margin="0,245,0,0" VerticalAlignment="Top" Width="576" Orientation="Horizontal" FlowDirection="LeftToRight">
+            <Button Background="LightGray" Content="Задачи" Height="64" Width="192" BorderBrush="Black"/>
+            <Button Background="White" Content="Заявки" Height="64" Width="192" BorderBrush="Black"/>
+            <Button Background="LightGray" Content="Модули" Height="64" Width="192" BorderBrush="Black"/>
+        </StackPanel>
+        <Frame Margin="32,314,32,49" BorderBrush="Black" BorderThickness="1">
+            
+        </Frame>
+    </Grid>
+</Window>

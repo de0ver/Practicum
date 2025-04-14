@@ -1,0 +1,13 @@
+insert into [Users] (ID, login, password, name, role_id, group_id) values (1, 'admin', 'admin', 'admin', 1, 1);
+insert into [Users] (ID, login, password, name, role_id, group_id) values (2, 'sysdba', 'masterkey', 'sysdba', 1, 1);
+insert into [Users] (ID, login, password, name, role_id, group_id) values (3, 'kiselevdv', 'jIlFXy99pv', 'kiselevdv', 4, 4);
+insert into [Users] (ID, login, password, name, role_id, group_id) values (4, 'burtsev', 'CNAGFrej8w', 'burtsev', 3, 3);
+insert into [Users] (ID, login, password, name, role_id, group_id) values (5, 'pautov', 'ry39Z9dDUA', 'pautov', 2, 2);
+insert into [Users] (ID, login, password, name, role_id, group_id) values (6, 'mikhailov', '4QdaXPNz2j', 'mikhailov', 3, 3);
+insert into [Users] (ID, login, password, name, role_id, group_id) values (7, 'suvorov', 'OVjyULTUrC', 'Иван', 2, 2);
+insert into [Users] (ID, login, password, name, role_id, group_id) values (8, 'vasilyev', '1uoBOpKFPl', 'vasilyev', 2, 2);
+insert into [Users] (ID, login, password, name, role_id, group_id) values (9, 'alexeev', 'klZy3xDKEX', 'Алексей', 2, 2);
+insert into [Users] (ID, login, password, name, role_id, group_id) values (10, 'davydovss', 'iUTaggWDpd', 'Сергей', 4, 4);
+insert into [Users] (ID, login, password, name, role_id, group_id) values (11, 'mukhinma', '0QP2hPcIn8', 'Михаил', 4, 4);
+insert into [Users] (ID, login, password, name, role_id, group_id) values (12, 'test', 'test', 'test', 5, 5);
+insert into [Users] (ID, login, password, name, role_id, group_id) values (13, 'pNDvUwZc4g', 'dWuSszrTH2', 'admin', 5, 5);
