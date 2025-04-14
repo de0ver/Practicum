@@ -36,13 +36,40 @@ namespace practicum_march_april_2025
             }
         }
 
-        private void Reset(object sender, RoutedEventArgs e)
+        private void Reset(object sender, RoutedEventArgs e) //отключаемся, хз зачем
         {
             ServerName.Text = UserName.Text = ServerPass.Password = DbName.Text = "";
+            globals.connection.Close();
+            globals.check_register();
+
+            try
+            {
+                globals.kristaApp.SetValue("server_name", "");
+                globals.kristaApp.SetValue("server_login", "");
+                globals.kristaApp.SetValue("server_password", "");
+                globals.kristaApp.SetValue("server_db", "");
+            } catch (Exception)
+            {
+
+            }
+
             ConnectStatusSet(false);
         }
-        private void Done(object sender, RoutedEventArgs e)
+        private void Done(object sender, RoutedEventArgs e) //при нажатии на зеленую кнопочку, проверяем подключение с базой
         {
+            globals.check_register();
+
+            try
+            {
+                globals.kristaApp.SetValue("server_name", ServerName.Text);
+                globals.kristaApp.SetValue("server_login", UserName.Text);
+                globals.kristaApp.SetValue("server_password", ServerPass.Password);
+                globals.kristaApp.SetValue("server_db", DbName.Text);
+            } catch (Exception)
+            {
+
+            }
+
             ConnectStatusSet(globals.check_connection(UserName.Text, ServerPass.Password, DbName.Text, ServerName.Text));
         }
     }

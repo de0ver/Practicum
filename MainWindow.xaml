@@ -18,7 +18,7 @@
                     <PasswordBox x:Name="pboxPassword" HorizontalAlignment="Left" Margin="0,86,0,0" PasswordChar="*" VerticalAlignment="Top" Width="312" MaxLength="32"/>
                     <Label Content="Логин" HorizontalAlignment="Left" VerticalAlignment="Top"/>
                     <Label Content="Пароль" HorizontalAlignment="Left" Margin="0,62,0,0" VerticalAlignment="Top"/>
-                    <CheckBox Content="Запомнить меня" Margin="0,132,0,0" VerticalAlignment="Top"/>
+                    <CheckBox x:Name="RememberMeBox" Content="Запомнить меня" Margin="0,132,0,0" VerticalAlignment="Top" IsEnabledChanged="RememberMe"/>
                 </Grid>
             </Border>
             <Canvas HorizontalAlignment="Center" Height="440" VerticalAlignment="Center" Width="616">

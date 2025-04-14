@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.ServiceProcess;
@@ -13,8 +14,10 @@ namespace Globals
         public string conn_user = "admin";
         public string conn_pass = "admin";
         public string conn_db = "practicum";
-        public string conn_server = Environment.MachineName + "\\SQLEXPRESS";
+        public string conn_server = Environment.MachineName;
         private string[] tables = { "Users", "Roles", "Groups" };
+        public RegistryKey registryKey = Registry.CurrentUser;
+        public RegistryKey kristaApp;
 
         public enum PopUpType
         {
@@ -102,6 +105,34 @@ namespace Globals
             }
         }
 
+        public string[] check_register()
+        {
+            string[] user = new string[7];
+
+            try
+            {
+                if ((kristaApp = registryKey.OpenSubKey("krista_app", true)) != null)
+                {
+                    user[0] = kristaApp.GetValue("login").ToString();
+                    user[1] = kristaApp.GetValue("password").ToString();
+                    user[2] = kristaApp.GetValue("remember_me").ToString();
+                    user[3] = kristaApp.GetValue("server_name").ToString();
+                    user[4] = kristaApp.GetValue("server_login").ToString();
+                    user[5] = kristaApp.GetValue("server_password").ToString();
+                    user[6] = kristaApp.GetValue("server_db").ToString();
+                }
+                else
+                {
+                    kristaApp = registryKey.CreateSubKey("krista_app");
+                }
+            } catch (Exception)
+            {
+
+            }
+
+            return user;
+        }
+
         public bool check_services()
         {
             ServiceController[] service;
@@ -109,11 +140,14 @@ namespace Globals
 
             for (int i = 0; i < service.Length; i++)
             {
-                if (service[i].DisplayName.Contains("SQL"))
+                if (service[i].DisplayName.Contains("MSSQL") && service[i].Status == ServiceControllerStatus.Running)
+                {
+                    conn_server += "\\" + service[i].ServiceName.Replace("MSSQL$", "");
                     return true;
+                }
             }
 
-            Show("1", PopUpType.OK);
+            Show("Службы SQL Server не найдены!\n", PopUpType.OK);
 
             return false;
         }
@@ -126,6 +160,9 @@ namespace Globals
             connection = connect(
                 $"data source={conn_server};initial catalog={conn_db};user id={conn_user};password={conn_pass};MultipleActiveResultSets = True"
             );
+
+            if (connection.State == System.Data.ConnectionState.Closed)
+                return false;
 
             if (!check_tables())
                 return false;
@@ -142,13 +179,16 @@ namespace Globals
                 $"data source={server};initial catalog={db};user id={user};password={pass};MultipleActiveResultSets = True"
             );
 
+            if (connection.State == System.Data.ConnectionState.Closed)
+                return false;
+
             if (!check_tables())
                 return false;
 
             return !(connection.State == System.Data.ConnectionState.Closed);
         }
 
-        public bool check_tables()
+        private bool check_tables()
         {
             SqlDataReader response;
             SqlCommand comm;
@@ -170,7 +210,7 @@ namespace Globals
                         if (create_table(tables[i]))
                             Show("Таблица создана!", PopUpType.OK);
                         else
-                            Show(ex.ToString(), PopUpType.Error);
+                            Show(ex.Message, PopUpType.Error);
                     }
                     else
                     {
@@ -184,20 +224,25 @@ namespace Globals
         private SqlConnection connect(string conn_text)
         {
             SqlConnection conn = new SqlConnection(conn_text);
-
-            string err = "";
-
             try
             {
                 conn.Open();
             }
             catch (SqlException ex)
             {
-                err = ex.ToString();
+                switch (ex.Number)
+                {
+                    case -1:
+                        Show("Подключение к серверу не установлено, сервер не найден или недоступен. Измените подключение в настройках.", PopUpType.Error);
+                        break;
+                    case 233:
+                        Show("Подключение к серверу установлено, неверно указано подключение к базе!. Измените подключение в настройках.", PopUpType.Error);
+                        break;
+                    default:
+                        Show(ex.Message, PopUpType.Error);
+                     break;
+                }
             }
-
-            if (conn.State == System.Data.ConnectionState.Closed)
-                Show("Нет подключения к базе данных!\n" + err, PopUpType.Error);
 
             return conn;
         }
@@ -211,14 +256,14 @@ namespace Globals
         {
             try
             {
+                //todo create tables script
                 return command(
                             $"USE [{conn_db}]\r\n\r\n/****** Object:  Table [dbo].[{name}]    Script Date: 14.04.2025 6:53:09 ******/\r\nSET ANSI_NULLS ON\r\n\r\nSET QUOTED_IDENTIFIER ON\r\n\r\nCREATE TABLE [dbo].[{name}](\r\n\t[ID] [int] NOT NULL,\r\n\t[login] [nvarchar](50) NULL,\r\n\t[password] [nvarchar](50) NULL,\r\n\t[name] [nvarchar](max) NULL,\r\n\t[role_id] [smallint] NULL,\r\n\t[group_id] [smallint] NULL\r\n) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]\r\n"
-                        )
-                        .ExecuteNonQuery() > 0;
+                        ).ExecuteNonQuery() > 0;
             }
             catch (SqlException ex)
             {
-                return Show(ex.ToString(), PopUpType.Error) == MessageBoxResult.None;
+                return Show(ex.Message, PopUpType.Error) == MessageBoxResult.None;
             }
         }
 

@@ -6,7 +6,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Globals;
 using krista_app;
+using Microsoft.Win32;
 using ModernWpf;
+using Windows.System.UserProfile;
 
 namespace practicum_march_april_2025
 {
@@ -16,14 +18,24 @@ namespace practicum_march_april_2025
     public partial class MainWindow : Window
     {
         Global globals = new Global();
-        Global.User user;
+        Global.User user = new Global.User(-1, "nil", "nil", 0, 0);
         Global.PopUp popUp = new Global.PopUp();
+        string[] app_user;
 
         public MainWindow()
         {
             InitializeComponent();
 
             globals.check_connection();
+
+            app_user = globals.check_register();
+
+            if (app_user != null)
+            {
+                tboxLogin.Text = app_user[0];
+                pboxPassword.Password = app_user[1];
+                RememberMeBox.IsChecked = app_user[2] == "True";
+            }
         }
 
         private void LogoClick(object sender, MouseButtonEventArgs e)
@@ -33,8 +45,11 @@ namespace practicum_march_april_2025
 
         private void LoginClick(object sender, RoutedEventArgs e)
         {
-            if (CheckUser(tboxLogin.Text, pboxPassword.Password))
+            if (CheckUser(tboxLogin.Text, pboxPassword.Password).id != -1)
             {
+                if (RememberMeBox.IsEnabled)
+                    RememberMe();
+
                 if (user.role_id == 1)
                 {
                     Admin admin_page = new Admin(globals);
@@ -59,7 +74,7 @@ namespace practicum_march_april_2025
             }
         }
 
-        bool CheckUser(string login, string password)
+        Global.User CheckUser(string login, string password)
         {
             SqlDataReader response;
             bool result;
@@ -73,23 +88,25 @@ namespace practicum_march_april_2025
             }
             catch (Exception)
             {
-                return false;
+                return user;
             }
 
             if (result = response.HasRows)
             {
                 response.Read();
 
-                user.id = response.GetInt32(0);
-                user.login = response.GetString(1);
-                user.name = response.GetString(2);
-                user.role_id = response.GetInt16(3);
-                user.group_id = response.GetInt16(4);
+                 user = new Global.User(
+                    response.GetInt32(0),
+                    response.GetString(1),
+                    response.GetString(2),
+                    response.GetInt16(3),
+                    response.GetInt16(4)
+                 );
             }
 
             response.Close();
 
-            return result;
+            return user;
         }
 
         private void MoonClick(object sender, RoutedEventArgs e)
@@ -138,6 +155,26 @@ namespace practicum_march_april_2025
             Settings settings = new Settings(globals);
 
             settings.ShowDialog();
+        }
+
+        private void RememberMe(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            globals.check_register();
+
+            globals.kristaApp.SetValue("login", tboxLogin.Text.Length > 0 ? tboxLogin.Text : "");
+            globals.kristaApp.SetValue("password", pboxPassword.Password.Length > 0 ? pboxPassword.Password : "");
+        }
+
+        private void RememberMe()
+        {
+            globals.check_register();
+
+            if (RememberMeBox.IsChecked == true)
+            {
+                globals.kristaApp.SetValue("login", tboxLogin.Text.Length > 0 ? tboxLogin.Text : "");
+                globals.kristaApp.SetValue("password", pboxPassword.Password.Length > 0 ? pboxPassword.Password : "");
+            }
+            globals.kristaApp.SetValue("remember_me", RememberMeBox.IsChecked);
         }
     }
 }
