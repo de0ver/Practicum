@@ -27,13 +27,8 @@ namespace practicum_march_april_2025
         {
             InitializeComponent();
 
-            if (globals.check_connection() == false)
-            {
-                if (popUp.Show("Так как не удалось подключиться к серверу, включить Режим предпросмотра?", Global.PopUpType.Warning) == MessageBoxResult.Yes)
-                {
-                    globals.preview_mode = true;
-                }
-            }
+            if (!globals.check_connection())
+				globals.preview_mode = (popUp.Show("Так как не удалось подключиться к серверу, включить Режим предпросмотра?", Global.PopUpType.Warning) == MessageBoxResult.Yes);
 
             if (!globals.preview_mode)
             {
@@ -68,13 +63,11 @@ namespace practicum_march_april_2025
                 if (user.role_id == 1)
                 {
                     Admin admin_page = new Admin(globals);
-
                     admin_page.Show();
                 }
                 else
                 {
                     Hub hub = new Hub();
-
                     hub.Show();
                 }
 
@@ -84,7 +77,6 @@ namespace practicum_march_april_2025
             {
                 popUp.Show("Неправильный логин или пароль!", Global.PopUpType.Error);
                 pboxPassword.Clear();
-
                 tboxLogin.Focus();
             }
         }
@@ -94,7 +86,6 @@ namespace practicum_march_april_2025
             if (!globals.preview_mode)
             {
                 SqlDataReader response;
-                bool result;
                 try
                 {
                     SqlCommand command = new SqlCommand(
@@ -108,7 +99,7 @@ namespace practicum_march_april_2025
                     return user;
                 }
 
-                if (result = response.HasRows)
+                if (response.HasRows)
                 {
                     response.Read();
 
@@ -167,14 +158,12 @@ namespace practicum_march_april_2025
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);
-
             Application.Current.Shutdown();
         }
 
         private void Settings_MouseDown(object sender, MouseButtonEventArgs e)
         {
             Settings settings = new Settings(globals);
-
             settings.ShowDialog();
         }
 
@@ -183,7 +172,6 @@ namespace practicum_march_april_2025
             if (!globals.preview_mode)
             {
                 globals.check_register();
-
                 globals.kristaApp.SetValue("login", tboxLogin.Text.Length > 0 ? tboxLogin.Text : "");
                 globals.kristaApp.SetValue("password", pboxPassword.Password.Length > 0 ? pboxPassword.Password : "");
             }
@@ -194,7 +182,6 @@ namespace practicum_march_april_2025
             if (!globals.preview_mode)
             {
                 globals.check_register();
-
                 if (RememberMeBox.IsChecked == true)
                 {
                     globals.kristaApp.SetValue("login", tboxLogin.Text.Length > 0 ? tboxLogin.Text : "");

@@ -129,7 +129,7 @@ namespace Globals
                 }
             } catch (Exception)
             {
-
+				Show("Не удалось получить пользователя из реестра!", PopUpType.OK);
             }
 
             return user;
@@ -282,14 +282,12 @@ namespace Globals
         public MessageBoxResult Show(string text, string title, PopUpType type)
         {
             PopUp popUp = new PopUp();
-
             return popUp.Show(text, title, type);
         }
 
         public MessageBoxResult Show(string text, PopUpType type)
         {
             PopUp popUp = new PopUp();
-
             return popUp.Show(text, type);
         }
 
@@ -323,22 +321,6 @@ namespace Globals
             public string get_role()
             {
                 return "";
-                /*
-                PopUp popUp = new PopUp();
-
-                SqlDataReader reader;
-                string role = "nil";
-                try {
-                    reader = command("select NAME from ROLES where ROLE_ID = Users.ROLE_ID").ExecuteReader(); //TODO
-                    reader.Read();
-                    role = reader.GetString(0);
-                    reader.Close();
-                } catch (SqlException ex) {
-                    popUp.Show(ex.ToString(), PopUpType.Error);
-                }
-
-                return role;
-                */
             }
         }
     }
