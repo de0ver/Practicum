@@ -33,12 +33,16 @@ namespace krista_app
 
         private void get_workers()
         {
-            try
+            if (!globals.preview_mode)
             {
-                SqlDataReader response = globals.command("select * from dbo.Users").ExecuteReader();
-            } catch (SqlException ex)
-            {
-                globals.Show(ex.ToString(), Global.PopUpType.Error);
+                try
+                {
+                    SqlDataReader response = globals.command("select * from dbo.Users").ExecuteReader();
+                }
+                catch (SqlException ex)
+                {
+                    globals.Show(ex.ToString(), Global.PopUpType.Error);
+                }
             }
         }
 

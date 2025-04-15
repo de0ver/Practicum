@@ -16,9 +16,18 @@ namespace practicum_march_april_2025
 
             globals = shit;
 
-            ConnectStatusSet(globals.connection.State == System.Data.ConnectionState.Open);
-
-            ServerName.Text = globals.conn_server;
+            if (!globals.preview_mode)
+            {
+                ConnectStatusSet(globals.connection.State == System.Data.ConnectionState.Open);
+                ServerName.ItemsSource = globals.services;
+                ServerName.SelectedIndex = 0;
+            }
+            else
+            {
+                ServerName.Text = globals.conn_server + "\\MSSQLSERVER";
+                ConnectStatusSet(false);
+            }
+            
             UserName.Text = globals.conn_user;
             ServerPass.Password = globals.conn_pass;
             DbName.Text = globals.conn_db;
@@ -70,7 +79,10 @@ namespace practicum_march_april_2025
 
             }
 
-            ConnectStatusSet(globals.check_connection(UserName.Text, ServerPass.Password, DbName.Text, ServerName.Text));
+            if (!globals.preview_mode)
+                ConnectStatusSet(globals.check_connection(UserName.Text, ServerPass.Password, DbName.Text, ServerName.Text));
+            else
+                ConnectStatusSet(false);
         }
     }
 }

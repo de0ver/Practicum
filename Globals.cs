@@ -16,8 +16,10 @@ namespace Globals
         public string conn_db = "practicum";
         public string conn_server = Environment.MachineName;
         private string[] tables = { "Users", "Roles", "Groups" };
+        public List<string> services = new List<string>();
         public RegistryKey registryKey = Registry.CurrentUser;
         public RegistryKey kristaApp;
+        public bool preview_mode;
 
         public enum PopUpType
         {
@@ -135,21 +137,30 @@ namespace Globals
 
         public bool check_services()
         {
-            ServiceController[] service;
-            service = ServiceController.GetServices();
-
-            for (int i = 0; i < service.Length; i++)
+            if (!preview_mode)
             {
-                if (service[i].DisplayName.Contains("MSSQL") && service[i].Status == ServiceControllerStatus.Running)
+                ServiceController[] service;
+                service = ServiceController.GetServices();
+
+                if (services.Count > 0)
+                    services.Clear(); //главное не забыть очищать список, а то при вызове этой функции мы будем бесконечно добавлять
+
+                for (int i = 0; i < service.Length; i++)
                 {
-                    conn_server += "\\" + service[i].ServiceName.Replace("MSSQL$", "");
-                    return true;
+                    if (service[i].DisplayName.Contains("MSSQL") && service[i].Status == ServiceControllerStatus.Running)
+                    {
+                        services.Add(conn_server + "\\" + service[i].ServiceName.Replace("MSSQL$", ""));
+                    }
                 }
+
+                if (services.Count == 0)
+                    Show("Службы SQL Server не найдены!\n", PopUpType.OK);
+            } else
+            {
+                services.Add(conn_server + "\\" + "MSSQLSERVER");
             }
 
-            Show("Службы SQL Server не найдены!\n", PopUpType.OK);
-
-            return false;
+            return services.Count > 0;
         }
 
         public bool check_connection()
@@ -158,7 +169,7 @@ namespace Globals
                 return false;
 
             connection = connect(
-                $"data source={conn_server};initial catalog={conn_db};user id={conn_user};password={conn_pass};MultipleActiveResultSets = True"
+                $"data source={services[0]};initial catalog={conn_db};user id={conn_user};password={conn_pass};MultipleActiveResultSets = True;Connection Timeout=5"
             );
 
             if (connection.State == System.Data.ConnectionState.Closed)
@@ -176,7 +187,7 @@ namespace Globals
                 return false;
 
             connection = connect(
-                $"data source={server};initial catalog={db};user id={user};password={pass};MultipleActiveResultSets = True"
+                $"data source={server};initial catalog={db};user id={user};password={pass};MultipleActiveResultSets = True;Connection Timeout=5"
             );
 
             if (connection.State == System.Data.ConnectionState.Closed)
@@ -236,7 +247,7 @@ namespace Globals
                         Show("Подключение к серверу не установлено, сервер не найден или недоступен. Измените подключение в настройках.", PopUpType.Error);
                         break;
                     case 233:
-                        Show("Подключение к серверу установлено, неверно указано подключение к базе!. Измените подключение в настройках.", PopUpType.Error);
+                        Show("Подключение к серверу установлено, неверно указано подключение к базе! Измените подключение в настройках.", PopUpType.Error);
                         break;
                     default:
                         Show(ex.Message, PopUpType.Error);
@@ -256,10 +267,11 @@ namespace Globals
         {
             try
             {
+                return Show("!!!WIP!!!", PopUpType.OK) == MessageBoxResult.None;
                 //todo create tables script
-                return command(
-                            $"USE [{conn_db}]\r\n\r\n/****** Object:  Table [dbo].[{name}]    Script Date: 14.04.2025 6:53:09 ******/\r\nSET ANSI_NULLS ON\r\n\r\nSET QUOTED_IDENTIFIER ON\r\n\r\nCREATE TABLE [dbo].[{name}](\r\n\t[ID] [int] NOT NULL,\r\n\t[login] [nvarchar](50) NULL,\r\n\t[password] [nvarchar](50) NULL,\r\n\t[name] [nvarchar](max) NULL,\r\n\t[role_id] [smallint] NULL,\r\n\t[group_id] [smallint] NULL\r\n) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]\r\n"
-                        ).ExecuteNonQuery() > 0;
+                //return command(
+                //            $"USE [{conn_db}]\r\n\r\n/****** Object:  Table [dbo].[{name}]    Script Date: 14.04.2025 6:53:09 ******/\r\nSET ANSI_NULLS ON\r\n\r\nSET QUOTED_IDENTIFIER ON\r\n\r\nCREATE TABLE [dbo].[{name}](\r\n\t[ID] [int] NOT NULL,\r\n\t[login] [nvarchar](50) NULL,\r\n\t[password] [nvarchar](50) NULL,\r\n\t[name] [nvarchar](max) NULL,\r\n\t[role_id] [smallint] NULL,\r\n\t[group_id] [smallint] NULL\r\n) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]\r\n"
+                //        ).ExecuteNonQuery() > 0;
             }
             catch (SqlException ex)
             {

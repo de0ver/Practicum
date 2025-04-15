@@ -21,20 +21,35 @@ namespace practicum_march_april_2025
         Global.User user = new Global.User(-1, "nil", "nil", 0, 0);
         Global.PopUp popUp = new Global.PopUp();
         string[] app_user;
+        string guest = "guest";
 
         public MainWindow()
         {
             InitializeComponent();
 
-            globals.check_connection();
-
-            app_user = globals.check_register();
-
-            if (app_user != null)
+            if (globals.check_connection() == false)
             {
-                tboxLogin.Text = app_user[0];
-                pboxPassword.Password = app_user[1];
-                RememberMeBox.IsChecked = app_user[2] == "True";
+                if (popUp.Show("Так как не удалось подключиться к серверу, включить Режим предпросмотра?", Global.PopUpType.Warning) == MessageBoxResult.Yes)
+                {
+                    globals.preview_mode = true;
+                }
+            }
+
+            if (!globals.preview_mode)
+            {
+                app_user = globals.check_register();
+
+                if (app_user != null)
+                {
+                    tboxLogin.Text = app_user[0];
+                    pboxPassword.Password = app_user[1];
+                    RememberMeBox.IsChecked = app_user[2] == "True";
+                }
+            } else
+            {
+                tboxLogin.Text = guest;
+                pboxPassword.Password = guest;
+                RememberMeBox.IsChecked = true;
             }
         }
 
@@ -76,35 +91,41 @@ namespace practicum_march_april_2025
 
         Global.User CheckUser(string login, string password)
         {
-            SqlDataReader response;
-            bool result;
-            try
+            if (!globals.preview_mode)
             {
-                SqlCommand command = new SqlCommand(
-                    $"select ID, LOGIN, NAME, ROLE_ID, GROUP_ID from dbo.Users where login='{login}' and password='{password}'",
-                    globals.connection
-                );
-                response = command.ExecuteReader();
-            }
-            catch (Exception)
+                SqlDataReader response;
+                bool result;
+                try
+                {
+                    SqlCommand command = new SqlCommand(
+                        $"select ID, LOGIN, NAME, ROLE_ID, GROUP_ID from dbo.Users where login='{login}' and password='{password}'",
+                        globals.connection
+                    );
+                    response = command.ExecuteReader();
+                }
+                catch (Exception)
+                {
+                    return user;
+                }
+
+                if (result = response.HasRows)
+                {
+                    response.Read();
+
+                    user = new Global.User(
+                       response.GetInt32(0),
+                       response.GetString(1),
+                       response.GetString(2),
+                       response.GetInt16(3),
+                       response.GetInt16(4)
+                    );
+                }
+
+                response.Close();
+            } else
             {
-                return user;
+                user = new Global.User(1, guest, guest, 1, 1);
             }
-
-            if (result = response.HasRows)
-            {
-                response.Read();
-
-                 user = new Global.User(
-                    response.GetInt32(0),
-                    response.GetString(1),
-                    response.GetString(2),
-                    response.GetInt16(3),
-                    response.GetInt16(4)
-                 );
-            }
-
-            response.Close();
 
             return user;
         }
@@ -159,22 +180,28 @@ namespace practicum_march_april_2025
 
         private void RememberMe(object sender, DependencyPropertyChangedEventArgs e)
         {
-            globals.check_register();
+            if (!globals.preview_mode)
+            {
+                globals.check_register();
 
-            globals.kristaApp.SetValue("login", tboxLogin.Text.Length > 0 ? tboxLogin.Text : "");
-            globals.kristaApp.SetValue("password", pboxPassword.Password.Length > 0 ? pboxPassword.Password : "");
+                globals.kristaApp.SetValue("login", tboxLogin.Text.Length > 0 ? tboxLogin.Text : "");
+                globals.kristaApp.SetValue("password", pboxPassword.Password.Length > 0 ? pboxPassword.Password : "");
+            }
         }
 
         private void RememberMe()
         {
-            globals.check_register();
-
-            if (RememberMeBox.IsChecked == true)
+            if (!globals.preview_mode)
             {
-                globals.kristaApp.SetValue("login", tboxLogin.Text.Length > 0 ? tboxLogin.Text : "");
-                globals.kristaApp.SetValue("password", pboxPassword.Password.Length > 0 ? pboxPassword.Password : "");
+                globals.check_register();
+
+                if (RememberMeBox.IsChecked == true)
+                {
+                    globals.kristaApp.SetValue("login", tboxLogin.Text.Length > 0 ? tboxLogin.Text : "");
+                    globals.kristaApp.SetValue("password", pboxPassword.Password.Length > 0 ? pboxPassword.Password : "");
+                }
+                globals.kristaApp.SetValue("remember_me", RememberMeBox.IsChecked);
             }
-            globals.kristaApp.SetValue("remember_me", RememberMeBox.IsChecked);
         }
     }
 }

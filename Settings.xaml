@@ -10,7 +10,7 @@
         Height="280" Width="320" ResizeMode="NoResize" WindowStartupLocation="CenterScreen" UseLayoutRounding="False" Padding="5,5,5,5" WindowStyle="None">
     <Border Name="Border" BorderBrush="Black" BorderThickness="2">
         <Grid>
-            <TextBox x:Name="ServerName" HorizontalAlignment="Left" Margin="186,43,0,0" TextWrapping="NoWrap" VerticalAlignment="Top" Width="120"/>
+            <ComboBox x:Name="ServerName" HorizontalAlignment="Left" Margin="186,43,0,0" IsEditable="True" VerticalAlignment="Top" StaysOpenOnEdit="True" Width="120"/>
             <Label Content="Имя сервера: " HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top"/>
             <TextBox x:Name="UserName" HorizontalAlignment="Left" Margin="186,80,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120"/>
             <Label Content="Имя пользователя: " HorizontalAlignment="Left" Margin="10,87,0,0" VerticalAlignment="Top"/>
