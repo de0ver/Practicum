@@ -9,7 +9,7 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "D:\\Kiselev\\Git\\Repository\\Practicum\\Practicum\\bin\\Debug\\app_wpf.exe",
+            "program": "D:\\Kiselev\\Git\\Repository\\wow\\Practicum\\bin\\Debug\\app_wpf.exe",
             "args": [],
             "cwd": "${workspaceFolder}",
             "console": "internalConsole",

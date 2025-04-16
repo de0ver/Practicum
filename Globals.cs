@@ -1,10 +1,10 @@
-﻿using Microsoft.Win32;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.ServiceProcess;
 using System.Windows;
 using System.Windows.Media;
+using Microsoft.Win32;
 
 namespace Globals
 {
@@ -113,7 +113,7 @@ namespace Globals
 
             try
             {
-                if ((kristaApp = registryKey.OpenSubKey("krista_app", true)) != null)
+                if ((kristaApp = registryKey.OpenSubKey("SOFTWARE\\Krista\\wpf_app", true)) != null)
                 {
                     user[0] = kristaApp.GetValue("login").ToString();
                     user[1] = kristaApp.GetValue("password").ToString();
@@ -125,12 +125,10 @@ namespace Globals
                 }
                 else
                 {
-                    kristaApp = registryKey.CreateSubKey("krista_app");
+                    kristaApp = registryKey.CreateSubKey("SOFTWARE\\Krista\\wpf_app");
                 }
-            } catch (Exception)
-            {
-				Show("Не удалось получить пользователя из реестра!", PopUpType.OK);
             }
+            catch (Exception) { }
 
             return user;
         }
@@ -147,15 +145,21 @@ namespace Globals
 
                 for (int i = 0; i < service.Length; i++)
                 {
-                    if (service[i].DisplayName.Contains("MSSQL") && service[i].Status == ServiceControllerStatus.Running)
+                    if (
+                        service[i].DisplayName.Contains("MSSQL")
+                        && service[i].Status == ServiceControllerStatus.Running
+                    )
                     {
-                        services.Add(conn_server + "\\" + service[i].ServiceName.Replace("MSSQL$", ""));
+                        services.Add(
+                            conn_server + "\\" + service[i].ServiceName.Replace("MSSQL$", "")
+                        );
                     }
                 }
 
                 if (services.Count == 0)
                     Show("Службы SQL Server не найдены!\n", PopUpType.OK);
-            } else
+            }
+            else
             {
                 services.Add(conn_server + "\\" + "MSSQLSERVER");
             }
@@ -244,14 +248,20 @@ namespace Globals
                 switch (ex.Number)
                 {
                     case -1:
-                        Show("Подключение к серверу не установлено, сервер не найден или недоступен. Измените подключение в настройках.", PopUpType.Error);
+                        Show(
+                            "Подключение к серверу не установлено, сервер не найден или недоступен. Измените подключение в настройках.",
+                            PopUpType.Error
+                        );
                         break;
                     case 233:
-                        Show("Подключение к серверу установлено, неверно указано подключение к базе! Измените подключение в настройках.", PopUpType.Error);
+                        Show(
+                            "Подключение к серверу установлено, неверно указано подключение к базе! Измените подключение в настройках.",
+                            PopUpType.Error
+                        );
                         break;
                     default:
                         Show(ex.Message, PopUpType.Error);
-                     break;
+                        break;
                 }
             }
 

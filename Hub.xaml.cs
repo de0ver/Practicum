@@ -16,7 +16,6 @@ namespace practicum_march_april_2025
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);
-
             Application.Current.Shutdown();
         }
     }

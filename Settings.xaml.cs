@@ -1,6 +1,6 @@
-﻿using Globals;
-using System;
+﻿using System;
 using System.Windows;
+using Globals;
 
 namespace practicum_march_april_2025
 {
@@ -10,6 +10,7 @@ namespace practicum_march_april_2025
     public partial class Settings : Window
     {
         Global globals;
+
         public Settings(Global shit)
         {
             InitializeComponent();
@@ -27,7 +28,7 @@ namespace practicum_march_april_2025
                 ServerName.Text = globals.conn_server + "\\MSSQLSERVER";
                 ConnectStatusSet(false);
             }
-            
+
             UserName.Text = globals.conn_user;
             ServerPass.Password = globals.conn_pass;
             DbName.Text = globals.conn_db;
@@ -39,9 +40,11 @@ namespace practicum_march_april_2025
             {
                 ConnectStatus.Content = "Подключено";
                 ConnectStatusIco.Fill = globals.colors["Green"];
-            } else {
-               ConnectStatus.Content = "Не подключено";
-               ConnectStatusIco.Fill = globals.colors["Red"];
+            }
+            else
+            {
+                ConnectStatus.Content = "Не подключено";
+                ConnectStatusIco.Fill = globals.colors["Red"];
             }
         }
 
@@ -57,13 +60,12 @@ namespace practicum_march_april_2025
                 globals.kristaApp.SetValue("server_login", "");
                 globals.kristaApp.SetValue("server_password", "");
                 globals.kristaApp.SetValue("server_db", "");
-            } catch (Exception)
-            {
-
             }
+            catch (Exception) { }
 
             ConnectStatusSet(false);
         }
+
         private void Done(object sender, RoutedEventArgs e) //при нажатии на зеленую кнопочку, проверяем подключение с базой
         {
             globals.check_register();
@@ -74,13 +76,18 @@ namespace practicum_march_april_2025
                 globals.kristaApp.SetValue("server_login", UserName.Text);
                 globals.kristaApp.SetValue("server_password", ServerPass.Password);
                 globals.kristaApp.SetValue("server_db", DbName.Text);
-            } catch (Exception)
-            {
-
             }
+            catch (Exception) { }
 
             if (!globals.preview_mode)
-                ConnectStatusSet(globals.check_connection(UserName.Text, ServerPass.Password, DbName.Text, ServerName.Text));
+                ConnectStatusSet(
+                    globals.check_connection(
+                        UserName.Text,
+                        ServerPass.Password,
+                        DbName.Text,
+                        ServerName.Text
+                    )
+                );
             else
                 ConnectStatusSet(false);
         }

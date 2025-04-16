@@ -8,7 +8,6 @@ using Globals;
 using krista_app;
 using Microsoft.Win32;
 using ModernWpf;
-using Windows.System.UserProfile;
 
 namespace practicum_march_april_2025
 {
@@ -28,7 +27,12 @@ namespace practicum_march_april_2025
             InitializeComponent();
 
             if (!globals.check_connection())
-				globals.preview_mode = (popUp.Show("Так как не удалось подключиться к серверу, включить Режим предпросмотра?", Global.PopUpType.Warning) == MessageBoxResult.Yes);
+                globals.preview_mode = (
+                    popUp.Show(
+                        "Так как не удалось подключиться к серверу, включить Режим предпросмотра?",
+                        Global.PopUpType.Warning
+                    ) == MessageBoxResult.Yes
+                );
 
             if (!globals.preview_mode)
             {
@@ -40,7 +44,8 @@ namespace practicum_march_april_2025
                     pboxPassword.Password = app_user[1];
                     RememberMeBox.IsChecked = app_user[2] == "True";
                 }
-            } else
+            }
+            else
             {
                 tboxLogin.Text = guest;
                 pboxPassword.Password = guest;
@@ -104,16 +109,17 @@ namespace practicum_march_april_2025
                     response.Read();
 
                     user = new Global.User(
-                       response.GetInt32(0),
-                       response.GetString(1),
-                       response.GetString(2),
-                       response.GetInt16(3),
-                       response.GetInt16(4)
+                        response.GetInt32(0),
+                        response.GetString(1),
+                        response.GetString(2),
+                        response.GetInt16(3),
+                        response.GetInt16(4)
                     );
                 }
 
                 response.Close();
-            } else
+            }
+            else
             {
                 user = new Global.User(1, guest, guest, 1, 1);
             }
@@ -172,8 +178,14 @@ namespace practicum_march_april_2025
             if (!globals.preview_mode)
             {
                 globals.check_register();
-                globals.kristaApp.SetValue("login", tboxLogin.Text.Length > 0 ? tboxLogin.Text : "");
-                globals.kristaApp.SetValue("password", pboxPassword.Password.Length > 0 ? pboxPassword.Password : "");
+                globals.kristaApp.SetValue(
+                    "login",
+                    tboxLogin.Text.Length > 0 ? tboxLogin.Text : ""
+                );
+                globals.kristaApp.SetValue(
+                    "password",
+                    pboxPassword.Password.Length > 0 ? pboxPassword.Password : ""
+                );
             }
         }
 
@@ -184,8 +196,14 @@ namespace practicum_march_april_2025
                 globals.check_register();
                 if (RememberMeBox.IsChecked == true)
                 {
-                    globals.kristaApp.SetValue("login", tboxLogin.Text.Length > 0 ? tboxLogin.Text : "");
-                    globals.kristaApp.SetValue("password", pboxPassword.Password.Length > 0 ? pboxPassword.Password : "");
+                    globals.kristaApp.SetValue(
+                        "login",
+                        tboxLogin.Text.Length > 0 ? tboxLogin.Text : ""
+                    );
+                    globals.kristaApp.SetValue(
+                        "password",
+                        pboxPassword.Password.Length > 0 ? pboxPassword.Password : ""
+                    );
                 }
                 globals.kristaApp.SetValue("remember_me", RememberMeBox.IsChecked);
             }

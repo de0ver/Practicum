@@ -1,5 +1,4 @@
-﻿using Globals;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
@@ -13,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Globals;
 
 namespace krista_app
 {
@@ -22,6 +22,7 @@ namespace krista_app
     public partial class Admin : Window
     {
         Global globals;
+
         public Admin(Global shit)
         {
             InitializeComponent();
@@ -37,7 +38,9 @@ namespace krista_app
             {
                 try
                 {
-                    SqlDataReader response = globals.command("select * from dbo.Users").ExecuteReader();
+                    SqlDataReader response = globals
+                        .command("select * from dbo.Users")
+                        .ExecuteReader();
                 }
                 catch (SqlException ex)
                 {
@@ -46,39 +49,19 @@ namespace krista_app
             }
         }
 
-        private void inputRole_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
+        private void inputRole_SelectionChanged(object sender, SelectionChangedEventArgs e) { }
 
-        }
+        private void DeleteWorker(object sender, RoutedEventArgs e) { }
 
-        private void DeleteWorker(object sender, RoutedEventArgs e)
-        {
+        private void ReturnWorker(object sender, RoutedEventArgs e) { }
 
-        }
+        private void AddWorker(object sender, RoutedEventArgs e) { }
 
-        private void ReturnWorker(object sender, RoutedEventArgs e)
-        {
+        private void CheckPasswords(object sender, RoutedEventArgs e) { }
 
-        }
-        private void AddWorker(object sender, RoutedEventArgs e)
-        {
+        private void Back(object sender, RoutedEventArgs e) { }
 
-        }
-
-        private void CheckPasswords(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void Back(object sender, RoutedEventArgs e)
-        {
-
-        }
-
-        private void CheckInputs(object sender, TextChangedEventArgs e)
-        {
-
-        }
+        private void CheckInputs(object sender, TextChangedEventArgs e) { }
 
         protected override void OnClosed(EventArgs e)
         {
